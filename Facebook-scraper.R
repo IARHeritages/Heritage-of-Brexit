@@ -11,7 +11,7 @@ require(devtools)
 require(xlsx)
 
 # Obtain a temporary user access token to access Facebook API from https://developers.facebook.com/tools-and-support/.
-token <- "EAACEdEose0cBAHQT4u564uNiMY3FvhkeyXddpOvpOOVhbuHK9v96ykpdTheB0DaJiQ0tyDaPBOJ3RWcC82oZBjGep1KXNgpXDPvZC6hqFMnOCFbFMITwlmleNEkfAZChjs3gFe4wBgnOCGFGga6K8w6mnF4uYtuZAyoBchiWHQZDZD"
+token <- "inserttoken"
 
 # Extract all the public Facebook pages (and reltaed information available) that contain the work "Medieval in their title".
 Medieval <- searchPages(string="Medieval", token=token, n=1000)
