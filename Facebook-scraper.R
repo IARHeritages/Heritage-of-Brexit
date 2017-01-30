@@ -27,7 +27,7 @@ Medieval <- read.xlsx("medieval_Facebook-pages.xlsx", sheet=1)
 # Extract each of the entries in the list and extract their content, with a max of 10,000 post per page and save the content of each of them separately.
 usernames <- (medieval$username)
 for i in usernames {
-	i <- getPage(page=i, token=token, n=1000, feed=TRUE)
+	i <- getPage(page="i", token=token, n=1000, feed=TRUE)
 	write.xlsx(i, "i.xlsx") 
 }
 
