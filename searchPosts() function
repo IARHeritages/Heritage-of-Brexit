@@ -1,0 +1,141 @@
+################searchPosts() function documentation##########
+
+### Documentation for the function searchPosts()
+### The function was developed as part of the IARH project
+### It iterates through the facebook pages that can be extracted with searchPages() function
+### and searches for the user-defined keywords in the posts under this page. Subsequently it 
+### extracts posts that contain any given keyword into a dataframe that also indicates:
+### which keywords are included in the post
+### what Facebook page the post comes from (id and link)
+### Project IARH
+### Author Marta Krzyzanska
+### Some fragments of the code are based on: Facebook-scraper.R developed by Chiara Bonacchi as part of the IAHR project
+  
+
+###User defined variables
+
+facebookPages < - # a variable contianing a DATAFRAME of facebook pages obtained with the function searchPages (from Rfacebook library).
+keywords <- # a variable contianing a LIST of keywords that the function will look for in the comments.
+np <- #number of posts per page to return
+
+###Function
+
+searchPosts <-function(facebookPages, keywords,np){
+
+#Make a list of the ids of the facebook pages in the in the facebookPages dataframe
+idsFP <- facebookPages$id
+
+##Create list in which relevant data will be stored:
+from_id <-c()
+from_name <-c()
+message <- c()
+created_time <-c()
+type <- c()
+link <- c()
+id <- c()
+story <-c()
+likes_count <- c()
+comments_count <-c()
+shares_count <-c()
+kwords <- c()
+fp_id <- c()
+fp_link <-c()
+
+###Get the number of facebook pages stored in facebookPages needed for the loop
+f=length(idsFP)+1
+
+###Initiate the loop that iterates through all the facebook pages
+
+i=1
+while (i<f){
+
+ g <- idsFP[i]
+ j <- getPage(page=g, token=token, n=np, feed=TRUE)
+ #Get the number of posts on the page + 1
+ t = length(j$message) + 1
+
+ #Inititate the loop that iterates through the posts on a page and checks whether it contains given keywords
+ 
+ k=1
+ while (k < t){
+	a = j$message[k]
+	#Create a list in which keywords that appear in the post will be stored
+	my_keywords <- c()
+	
+	#Initiate the loop that iterate through every keyword and saves them if they are present
+	
+	for (m in keywords){
+		l <- grepl(m, a,ignore.case = TRUE)
+		if(l==TRUE){
+			my_keywords <- append(my_keywords,m)}
+			}
+	#Initiate the loop that checks whether any of the keywords appeared in the post, and if so, save the information about the post in the lists
+	
+	if (length(my_keywords)>0){
+		my_keywords <- paste(my_keywords,collapse=', ')
+		from_id <- append(from_id, j$from_id[k])
+		from_name <-append(from_name, j$from_name[k])
+		message <- append(message, j$message[k])
+		created_time <-append(created_time, j$created_time[k])
+		type <- append(type, j$type[k])
+		link <- append(link, j$link[k])
+		id <- append(id, j$id[k])
+		story <-append(story, j$story[k])
+		likes_count <- append(likes_count, j$likes_count[k])
+		comments_count <-append(comments_count, j$comments_count[k])
+		shares_count <-append(shares_count, j$shares_count[k])
+		fp_id <- append(fp_id, Brexit$id[i])
+		fp_link <- append(fp_link, Brexit$link[i])
+		kwords <- append(kwords, my_keywords)
+		k=k+1}else{
+		k=k+1}
+}
+i=i+1
+}
+
+#Put all the lists back together into a dataframe that can be quaried
+my_table <- data.frame(from_id)
+my_table$from_id <-from_id
+my_table$from_name <- from_name
+my_table$message <- message
+my_table$created_time <- created_time
+my_table$type <- type
+my_table$link <- link
+my_table$id <- id
+my_table$story <-story
+my_table$likes_count <- likes_count
+my_table$comments_count <-comments_count
+my_table$shares_count <-shares_count
+my_table$fp_id <- fp_id
+my_table$fp_link <- fp_link
+my_table$kwords <- kwords
+
+return (my_table)
+
+#Returns the dataframe with the relevant posts
+}
+########################END OF THE FUNCTION########################
+
+###################Example used for testing:######################
+
+# Set working directory
+setwd("~path")
+
+# Require Rfacebook, devtools and xlsx packages. If you have not installed htenm already, run install.packages() first.
+require(Rfacebook)
+require(devtools)
+require(xlsx)
+
+# Obtain a temporary user access token to access Facebook API from https://developers.facebook.com/tools-and-support/.
+token <- "inserttoken"
+
+#Extract all the public Facebook pages (and reltaed information available) that contain the work "Brexit"
+Brexit <- searchPages(string="Brexit", token=token, n=1000)
+
+#Define variables for the function:
+
+facebookPage <- Brexit[1,]
+keywords <- c("Britain","Europe")
+np=10
+new_table <- searchPosts(facebookPages, keywords,np)
+new_table
