@@ -40,7 +40,7 @@ shares_count <-c()
 kwords <- c()
 fp_id <- c()
 fp_link <-c()
-
+pageKeywords <-c()
 ###Get the number of facebook pages stored in facebookPages needed for the loop
 f=length(idsFP)+1
 
@@ -87,6 +87,7 @@ while (i<f){
 		fp_id <- append(fp_id, j$id[i])
 		fp_link <- append(fp_link, j$link[i])
 		kwords <- append(kwords, my_keywords)
+		pageKeywords <-append(pageKeywords,j$pageKeywords[i])
 		k=k+1}else{
 		k=k+1}
 }
@@ -109,7 +110,7 @@ my_table$shares_count <-shares_count
 my_table$fp_id <- fp_id
 my_table$fp_link <- fp_link
 my_table$kwords <- kwords
-
+my_table$pageKeywords <-pageKeywords
 return (my_table)
 
 #Returns the dataframe with the relevant posts
