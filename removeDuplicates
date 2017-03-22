@@ -1,0 +1,67 @@
+################removeDuplicates() function documentation##########
+
+### Documentation for the function removeDuplicates()
+### The function was developed as part of the IARH project
+### It iterates through the list of dataframes containing facebook pages extracted with searchPages() function
+### with everydata frame containing facebook pages with different keywords. Every iteration removes the duplicate entry
+### and adds information about additional keywords to the "keyword" column in the dataframe in which the entry was kept.
+### Note that to use that each dataframe extracted with searchPages requires additional column for storing keywords,
+### which can be added as listPages$newcolumn <- NA. 
+### Project IARH
+### Author Marta Krzyzanska
+
+###
+
+removeDuplicates <- function(listPages){
+l=length(listPages)+1
+i=1
+
+#Initiate first (1) loop that iterates through every dataframe
+while (i<l){
+	a=length(listPages[[i]][[7]]) + 1
+	j=1
+
+#Initiate second (2) loop that iterates through every row of this dataframe
+	while (j<a){
+		m=i+1
+
+#Initiate third (3) loop that iterates through all the other dataframes, except of the ones that already have been checked for duplicates
+		while (m<l){
+			k=1
+
+#Initiate the fourth (4) loop that iterates through every entry in the second dataframe
+			while(k<length(listPages[[m]][[7]])+1){
+
+#Check whether the entries much, and if so add appropriate keyword to the kyword column in the first dataframe, and remove it from the second
+
+				if(listPages[[i]][[7]][j] == listPages[[m]][[7]][k]){
+					listPages[[i]][[17]][j] <-  paste(listPages[[i]][[17]][j],listPages[[m]][[17]][k],sep=", ")
+					listPages[[m]] <- subset(listPages[[m]], listPages[[m]]$link != listPages[[m]][[7]][k] )
+					k=length(listPages[[m]][[7]])+1
+					}else{
+					k=k+1}
+			} #End loop 4
+			m=m+1
+		} #End loop 3
+		j=j+1
+	}#End loop 2
+	i=i+1
+}#End loop 1
+
+return (listPages)
+}
+
+#Variables:
+
+#listPages - list of dataframes extracted with searchPages(), with additional column added
+
+#### Example used for testing ###
+
+listPages <- c()
+listPages[[1]] <-searchPages(string=c("Brexit","EU"), token=token, n=1000)
+listPages[[2]] <-searchPages(string="Brexit", token=token, n=1000)
+listPages[[1]]$pageKeywords <- "BrexitEU"
+listPages[[2]]$pageKeywords <- "Brexit"
+l=length(listPages)+1
+
+listPages <- removeDuplicates(listPages)
