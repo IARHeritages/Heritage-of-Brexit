@@ -84,8 +84,8 @@ while (i<f){
 		likes_count <- append(likes_count, j$likes_count[k])
 		comments_count <-append(comments_count, j$comments_count[k])
 		shares_count <-append(shares_count, j$shares_count[k])
-		fp_id <- append(fp_id, Brexit$id[i])
-		fp_link <- append(fp_link, Brexit$link[i])
+		fp_id <- append(fp_id, j$id[i])
+		fp_link <- append(fp_link, j$link[i])
 		kwords <- append(kwords, my_keywords)
 		k=k+1}else{
 		k=k+1}
