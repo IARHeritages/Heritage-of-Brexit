@@ -51,6 +51,7 @@ while (i<f){
 
  g <- idsFP[i]
  j <- getPage(page=g, token=token, n=np, feed=TRUE)
+ pk <- facebookPages$pageKeywords[i] 
  #Get the number of posts on the page + 1
  t = length(j$message) + 1
 
@@ -87,7 +88,7 @@ while (i<f){
 		fp_id <- append(fp_id, j$id[i])
 		fp_link <- append(fp_link, j$link[i])
 		kwords <- append(kwords, my_keywords)
-		pageKeywords <-append(pageKeywords,j$pageKeywords[i])
+		pageKeywords <-append(pageKeywords,pk)
 		k=k+1}else{
 		k=k+1}
 }
