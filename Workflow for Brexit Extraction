@@ -72,7 +72,7 @@ write.csv(listPages, "listPagesRemovedDupliactes.csv")
 
 listPosts <- c()
 l=length(listPages)+1
-np=100
+np=1000000
 i=1
 while (i < l){
 fp <- listPages[[i]]
@@ -99,7 +99,7 @@ k=1
 m=length(listPosts[[i]][[7]])+1
 while (k<m){
 post_id<-listPosts[[i]][[7]][k]
-post <- getPost(post=post_id,n=30,token=token)
+post <- getPost(post=post_id,n=1000000,token=token)
 comments[[l]] <-post
 l=l+1
 k=k+1}
@@ -113,7 +113,6 @@ write.csv(comments, "comments.csv")
 #Post has three elements <- to access individual comments you need post[[3]]. 
 #Get replies under every comment:
 
-reply <- getCommentReplies(com_id,n=1,token=token)
 replies <- c()
 l=1
 i=1
@@ -127,7 +126,7 @@ while (k<m){
 print(i+k)
 if(comments[[i]][[3]]$comments_count[k]>0){
 com_id <- comments[[i]][[3]]$id[k]
-reply <- getCommentReplies(com_id,n=30,token=token)
+reply <- getCommentReplies(com_id,n=1000000,token=token)
 replies[[l]] <- reply
 l=l+1
 k=k+1}
@@ -150,3 +149,4 @@ save.image("extracted_data.Rdata")
 ###Later load workspace with:
 
 load("extracted_data.Rdata")
+
