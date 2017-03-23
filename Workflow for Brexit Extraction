@@ -1,0 +1,152 @@
+### Workflow for extracting data about the use of heritage-related keywords in the context of Brexit###
+
+### The code was developed as part of the IARH project
+### It extract public facebook pages indluding any keyword from one set of keywords.
+### Subsequently, it extracts posts on these pages that contain any keyword from the second set of keywords.
+### Then, it extract all the comments and comment replies under thes posts
+### Project IARH
+### Author Marta Krzyzanska
+### Some fragments of the code are based on: Facebook-scraper.R developed by Chiara Bonacchi as part of the IAHR project
+
+# Set working directory
+setwd("~path")
+
+# Require Rfacebook, devtools and xlsx packages. If you have not installed htenm already, run install.packages() first.
+require(Rfacebook)
+require(devtools)
+require(xlsx)
+
+# Obtain a temporary user access token to access Facebook API from https://developers.facebook.com/tools-and-support/.
+token <- "inserttoken"
+
+#Require functions:
+
+#searchPages() - code available here: https://github.com/IARHeritages/Facebook-codes/blob/master/searchPosts()%20function
+#removeDuplicates() code available here: https://github.com/IARHeritages/Facebook-codes/blob/master/removeDuplicates
+
+#Import the lists of keywords related to Brexit and to the heritage from the excel spreadsheet. (The subsequent codes assumes
+#that the excel spreadsheet contains 2 columns: one with keywords to look for on the pages, the other one with keywords to
+#look for on the posts under the pages.
+
+keywords <- read.xlsx("spreadsheetWithTheListOfKeywords.xlsx",1)
+
+#Make a separate lists of keywords to look for in the pages and in the posts.
+
+#Substract one from the number of unique keywords if one of them is NA
+pkn <- length(unique(keywords[[1]])) - 1
+pageKeywords <-as.character(unique(keywords[[1]])[1:pkn])
+
+pokn <- length(unique(keywords[[2]]))
+postKeywords <- as.character(unique(keywords[[2]])[1:pokn])
+
+#Loop through the list of keywords to search the pages and assign them to the variables in the list
+
+listPages <- c()
+l=length(pageKeywords)+1
+i=1
+while (i < l){
+b <- searchPages(string=pageKeywords[i], token=token, n=1000)
+b$pageKeywords <- pageKeywords[i]
+listPages[[i]] <- b
+
+i=i+1
+}
+
+##Backup save the workspace or/and extract the pages as separate files, in case R crashes later 
+##(may happen in case of large number of keywords like in this case):
+
+save.image("listPages.Rdata")
+write.csv(listPages, "listPages.csv")
+
+
+##Remove duplicates
+
+listPages <- removeDuplicates(listPages)
+
+##Backup save the workspace or/and extract the pages as separate files, in case R crashes later 
+##(may happen in case of large number of keywords like in this case):
+
+save.image("listPagesRemovedDuplicates.Rdata")
+write.csv(listPages, "listPagesRemovedDupliactes.csv")
+#Get posts on these pages containing specific keywords:
+
+listPosts <- c()
+l=length(listPages)+1
+np=100
+i=1
+while (i < l){
+fp <- listPages[[i]]
+listPosts[[i]] <- searchPosts(fp, postKeywords,np)
+i=i+1
+}
+
+##Backup save the workspace or/and extract the pages as separate files, in case R crashes later 
+##(may happen in case of large number of keywords like in this case):
+
+save.image("listPosts.Rdata")
+write.csv(listPosts, "listPosts.csv")
+
+#Get all the comments under these posts
+#(Also gets posts without any comments under them, but then the entries in the list are empty)
+
+comments <- c()
+l=1
+i=1
+j=length(listPosts)+1
+while (i<j){
+if(length(listPosts[[i]])>0){
+k=1
+m=length(listPosts[[i]][[7]])+1
+while (k<m){
+post_id<-listPosts[[i]][[7]][k]
+post <- getPost(post=post_id,n=30,token=token)
+comments[[l]] <-post
+l=l+1
+k=k+1}
+i=i+1}else{
+i=i+1}
+}
+
+save.image("comments.Rdata")
+write.csv(comments, "comments.csv")
+
+#Post has three elements <- to access individual comments you need post[[3]]. 
+#Get replies under every comment:
+
+reply <- getCommentReplies(com_id,n=1,token=token)
+replies <- c()
+l=1
+i=1
+j=length(comments)+1
+
+while (i<j){
+	if(length(comments[[i]])==3){
+k=1
+m=length(comments[[i]][[3]]$id)+1
+while (k<m){
+print(i+k)
+if(comments[[i]][[3]]$comments_count[k]>0){
+com_id <- comments[[i]][[3]]$id[k]
+reply <- getCommentReplies(com_id,n=30,token=token)
+replies[[l]] <- reply
+l=l+1
+k=k+1}
+else{
+k=k+1}
+}
+i=i+1}else{
+print ("a")
+i=i+1}
+}
+
+#Replies in the spreadsheet:
+
+write.csv(replier, "replies.csv")
+
+###Save workspace with all the extracted data:
+
+save.image("extracted_data.Rdata")
+
+###Later load workspace with:
+
+load("extracted_data.Rdata")
