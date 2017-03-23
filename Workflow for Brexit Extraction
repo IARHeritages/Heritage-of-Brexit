@@ -56,7 +56,6 @@ i=i+1
 ##(may happen in case of large number of keywords like in this case):
 
 save.image("listPages.Rdata")
-write.csv(listPages, "listPages.csv")
 
 
 ##Remove duplicates
@@ -81,10 +80,8 @@ i=i+1
 }
 
 ##Backup save the workspace or/and extract the pages as separate files, in case R crashes later 
-##(may happen in case of large number of keywords like in this case):
 
 save.image("listPosts.Rdata")
-write.csv(listPosts, "listPosts.csv")
 
 #Get all the comments under these posts
 #(Also gets posts without any comments under them, but then the entries in the list are empty)
@@ -108,7 +105,6 @@ i=i+1}
 }
 
 save.image("comments.Rdata")
-write.csv(comments, "comments.csv")
 
 #Post has three elements <- to access individual comments you need post[[3]]. 
 #Get replies under every comment:
@@ -138,10 +134,7 @@ print ("a")
 i=i+1}
 }
 
-#Replies in the spreadsheet:
-
-write.csv(replier, "replies.csv")
-
+##Backup save the workspace or/and extract the pages as separate files, in case R crashes later 
 ###Save workspace with all the extracted data:
 
 save.image("extracted_data.Rdata")
