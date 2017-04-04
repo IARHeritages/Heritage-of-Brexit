@@ -28,3 +28,15 @@ postKeywords[i] <-paste(" ",postKeywords[i]," ",sep="")
 j=j+1
 print (i)
 i=i+1}else{i=i+1}}
+######Part 2: get the data with the keywords
+### my_posts is a list of lists of posts extracted from pages
+i=1
+j=length(my_posts)+1
+while (i<j){
+if(length(my_posts[[i]])>0){
+print (i)
+my_posts[[i]] <- searchPosts(my_posts[[i]],postKeywords)
+my_posts[[i]] <- subset(my_posts[[i]], my_posts[[i]]$keywords != "" )
+i=i+1}else{
+i=i+1}
+}
