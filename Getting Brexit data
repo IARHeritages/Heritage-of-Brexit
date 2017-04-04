@@ -14,7 +14,7 @@ require(xlsx)
 https://github.com/IARHeritages/Facebook-codes/blob/master/token
 
 #Load the token
-load("token.R")
+load("token")
 
 #Download the pages data from here and save it into your work directory:
 
