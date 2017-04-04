@@ -1,0 +1,30 @@
+###Part 1: redefining keywords
+###Add spaces to keywords that are shorter than 5 letters
+
+#Needs the list of keywords, (our current one is on the drive)
+
+###Add spaces to keywords that are shorter than 5 letters
+for(i in postKeywords2){
+if (nchar(i)<5 && i != "Celt" ){
+print (i)}}
+
+j=length(postKeywords)+1
+k=j
+i=1
+while(i < k){
+if ((nchar(postKeywords[i])<5 && postKeywords[i] != "Celt") || postKeywords[i] == "Penda" ){
+postKeywords[j] <- paste(" ",postKeywords[i],"\\. ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\, ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\! ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\? ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\; ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\: ",sep="")
+postKeywords[i] <-paste(" ",postKeywords[i]," ",sep="")
+j=j+1
+print (i)
+i=i+1}else{i=i+1}}
