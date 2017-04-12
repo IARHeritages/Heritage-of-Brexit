@@ -1,0 +1,219 @@
+####Part 1: Load all the extracted posts and save them in the list, save the list put together
+
+i=3
+
+while (i<6){
+
+load(paste("my_posts(",i,").R",sep=""))
+listPosts[[i]] <- my_posts
+i=i+1 }
+
+#Save the list of lists of posts
+save(listPosts,file="listPosts.R")
+
+
+Part 2: Import and process the keywords
+#load the list of keywords
+keywords <- read.xlsx("keywords.xlsx",1)
+#Make a separate lists of keywords to look for in the pages and in the posts.
+
+#Substract one from the number of unique keywords if one of them is NA
+pkn <- length(unique(keywords[[1]])) - 1
+pageKeywords <-as.character(unique(keywords[[1]])[1:pkn])
+
+pokn <- length(unique(keywords[[2]]))-1
+postKeywords <- as.character(unique(keywords[[2]])[1:pokn])
+
+###Add spaces to keywords that are shorter than 5 letters
+
+j=length(postKeywords)+1
+k=j
+i=1
+while(i < k){
+if ((nchar(postKeywords[i])<5 && postKeywords[i] != "Celt") || postKeywords[i] == "Penda" ){
+postKeywords[j] <- paste(" ",postKeywords[i],"\\. ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\, ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\! ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\? ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\; ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\: ",sep="")
+postKeywords[i] <-paste(" ",postKeywords[i]," ",sep="")
+j=j+1
+i=i+1}else{i=i+1}}
+
+###Define function: searches the post for a given list of keywords, returns the list of keywords
+
+searchPost <-function(post, keywords){
+
+	my_keywords <- c()
+	for (m in keywords){
+		l <- grepl(m, post,ignore.case = TRUE)
+		if(l==TRUE){
+			my_keywords <- append(my_keywords,m)}
+	}
+	a<-paste(my_keywords, collapse=', ' )
+	return (a)}
+
+
+###
+
+######Part 3: Extract only the data with the relevant keywords and detect the language of the posts 
+i=3
+j=length(listPosts)+1
+
+	while(i<j){
+		print (paste("Searching keywords in list",i,"out of",j,sep=" "))
+		k=1
+		l=length(listPosts[[i]])+1
+		while(k<l){
+			if(length(listPosts[[i]][[k]])>0){
+				print (paste("page",k,sep=" "))
+				listPosts[[i]][[k]]$keywords <-NA
+				m=1
+				n=length(listPosts[[i]][[k]]$message)+1
+				while(m<n){
+					listPosts[[i]][[k]]$keywords[m] <- searchPost(listPosts[[i]][[k]]$message[m],postKeywords)
+					m=m+1
+				}
+				listPosts[[i]][[k]] <- subset(listPosts[[i]][[k]],listPosts[[i]][[k]]$keywords!="")
+				listPosts[[i]][[k]]$language<-textcat(listPosts[[i]][[k]]$message)
+				k=k+1
+			}
+			else{
+				print (paste("page",k,sep=" "))
+				k=k+1
+			}
+		}
+		i=i+1
+	}
+		
+
+####Part 4: Get the relevant statistics
+
+##1: Merge all the dataframes into one table (only for statistics purposes):
+
+listPostsTable <- rbindlist(listPosts[[1]])
+i=4
+j= length(listPosts)+1
+while(i<j){
+	lpi <- rbindlist(listPosts[[i]])
+	listPostsTable <- rbind(listPostsTable,lpi)
+	i=i+1}
+### Get all the unique languages and all the unique entries for the keywords
+
+languages <- as.data.frame(table(listPostsTable$language))
+languages <- languages[with(languages, order(-Freq)), ]
+
+uniqueKeywords <- as.data.frame(table(listPostsTable$keyword))
+uniqueKeywords <- uniqueKeywords[with(uniqueKeywords, order(-Freq)), ]
+
+####Part 6: Extract only english posts or separate posts by languages
+
+listEnglishPosts <- listPosts
+i=1
+j=length(listPosts)+1
+
+	while(i<j){
+		print (paste("Subsetting posts in list",i,"out of",(j-1),sep=" "))
+		k=1
+		l=length(listPosts[[i]])+1
+		while(k<l){
+			if(length(listPosts[[i]][[k]])>0){
+				print (paste("page",k,sep=" "))
+				listEnglishPosts[[i]][[k]] <- subset(listEnglishPosts[[i]][[k]],listEnglishPosts[[i]][[k]]$language=="English")
+				k=k+1
+			}
+			else{
+				print (paste("page",k,sep=" "))
+				k=k+1
+			}
+		}
+		i=i+1
+	}
+
+###Part 6 optional: extract each language separately
+
+languages<-as.character(unique(listPostsTable$language))
+
+listPostsByLanguage <- c()
+i=1
+j=length(languages)+1
+while(i<j){
+listPostsByLanguage[[i]] <- assign(paste("list",languages[i],"Posts",sep=""),listPosts)
+}
+
+
+i=1
+j=length(listPosts)+1
+
+	while(i<j){
+		print (paste("Subsetting posts in list",i,"out of",(j-1),sep=" "))
+		k=1
+		l=length(listPosts[[i]])+1
+		while(k<l){
+			if(length(listPosts[[i]][[k]])>0){
+				print (paste("page",k,sep=" "))
+				y=1
+				z=lenght(listPostsByLanguages)+1
+				while(y<z){
+					listPostByLanguages[[y]] <- subset(listPosts[[i]][[k]],listPosts[[i]][[k]]$language==language[[y]])
+				y=y+1
+				}
+				k=k+1
+			}
+			else{
+				print (paste("page",k,sep=" "))
+				k=k+1
+			}
+		}
+		i=i+1
+	}
+
+
+
+####Part 5: Verify the relevance of the posts
+
+###Mark the entries containing keywords that guarantee that the post is relevant
+
+confirmedKeywords <- c("Roman Empire", etc)
+
+i=1
+j=length(listEnglishPosts)+1
+
+	while(i<j){
+		print (paste("Subsetting posts in list",i,"out of",(j-1),sep=" "))
+		k=1
+		l=length(listEnglishPosts[[i]])+1
+		while(k<l){
+			if(length(listEnglishPosts[[i]][[k]])>0){
+				print (paste("page",k,sep=" "))
+				listEnglishPosts[[i]][[k]]$verified <- "no"
+				m=1
+				n=length(listEnglishPosts[[i]][[k]]$message)+1
+				while(m<n){
+					o=1
+					p=length(confirmedKeywords)+1
+					while (o<p){
+						l <- grepl(confirmedKeywords[o], listEnglishPosts[[i]][[k]]$message[m],ignore.case = TRUE)
+						if(l==TRUE){
+							listEnglishPosts[[i]][[k]]$verified[m] <- "yes"}
+						o=o+1}
+						else{
+						o=o+1}
+					}
+					m=m+1
+				}
+				k=k+1
+			}
+			else{
+				print (paste("page",k,sep=" "))
+				k=k+1
+			}
+		}
+		i=i+1
+	}
