@@ -1,0 +1,22 @@
+### searchPosts() ###
+
+### The code was developed as part of the IARH project
+### The function searches a text given list of keywords and returns the list of keywords
+### Project IARH
+### Author Marta Krzyzanska
+
+#Variables:
+
+#post - string that contains the text in which keywords will be sought
+#keywords - list of keywords that the used for searching
+
+searchPost <-function(post, keywords){
+
+	my_keywords <- c()
+	for (m in keywords){
+		l <- grepl(m, post,ignore.case = TRUE)
+		if(l==TRUE){
+			my_keywords <- append(my_keywords,m)}
+	}
+	a<-paste(my_keywords, collapse=', ' )
+	return (a)}
