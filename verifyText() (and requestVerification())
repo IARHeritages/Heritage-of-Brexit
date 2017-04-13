@@ -1,0 +1,88 @@
+### verifyText() ###
+
+### The code was developed as part of the IARH project.
+### The function shows the use a keyword and fragment of the text in which it features and requests verification of it relevance.
+### Returns logical vector.
+### Project IARH
+### Author Marta Krzyzanska
+
+
+#Requires function requestVerification()
+
+###Part 1. Defining requestVerification()
+
+#Asks the user whether the post is relevant
+#Returns user's answer
+#When prompted for answer, only 1,2,3 are valid answeres
+
+requestVerification <-function(){
+cat (noquote("\nIs this post relevant?\nEnter the value from menu:\n\n1.Yes\n2.No\n3.I need more information\n\n"))
+x<-scan(file="",nmax=1,quiet=TRUE)
+return (x)}
+
+###Part 1. Defining verifyText()
+
+### verifyText() ###
+
+#Variables:
+
+#text - text to be verified
+#keyword - keyword searched for in the text
+
+#When prompted for answer, only 1,2,3 are valid answeres
+
+verifyText<-function(text, keyword){
+	e=1
+	l <- regexpr(keyword, text,ignore.case = TRUE)
+	b=l[1]-25
+	c=l[1]+25+nchar(keyword)
+	if(b<1){
+	b=1}
+	if(c>nchar(text)){
+	c=nchar(text)}
+	a <- substr(text, b, c)
+	cat (noquote("\nPost:\n\n"))	
+	cat ("    ",a,"    \n")
+	d<-requestVerification()
+	if(d == 1){
+	f=T
+	e=3}
+	else if(d==2){
+	f=F
+	e=3}
+	
+	while (e<3){
+		if(d==3&&e==1){
+			e=e+1
+			b=l[1]-50
+			c=l[1]+50+nchar(keyword)
+			if(b<1){
+			b=1}
+			if(c>nchar(text)){
+			c=nchar(text)}
+			a <- substr(text, b, c)	
+				
+		}
+		else if(d==3&&e==2){
+			e=e+1
+			a<-text
+		}
+
+		cat (noquote("\nPost:\n\n"))	
+		cat ("    ",a,"    \n")
+		d<-requestVerification()
+		if(d==1){
+		f=T
+		e=3}
+		else if(d==2){
+		f=F
+		e=3}
+		else if(d==3){e=2}
+		else{
+			cat (noquote("\nInvalid input, try again\n"))
+			e=2
+		}
+
+	}
+	return (f)
+}
