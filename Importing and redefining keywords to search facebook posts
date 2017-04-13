@@ -1,0 +1,65 @@
+### Workflow for importing and processing the keywords###
+
+### The code was developed as part of the IARH project
+### It imports and redefines the keywords that are going to be used to search facebook posts
+### Project IARH
+### Author Marta Krzyzanska
+
+# Set working directory
+setwd("~path")
+
+# Require xlsx package. If you have not installed htenm already, run install.packages() first.
+
+require(xlsx)
+
+###Part 1: Importing the keywords
+
+#load the list of keywords
+keywords <- read.xlsx("#Enter_file_name.xlsx",1)
+
+#Make a separate lists of keywords to look for in the pages and in the posts.
+
+#Substract one from the number of unique keywords if one of them is NA
+pkn <- length(unique(keywords[[1]])) - 1
+pageKeywords <-as.character(unique(keywords[[1]])[1:pkn])
+
+pokn <- length(unique(keywords[[2]]))-1
+postKeywords <- as.character(unique(keywords[[2]])[1:pokn])
+
+###Part 2: Redefining keywords
+#Adds spaces and interpunction with spaces to keywords that are shorter than 5 letters and to the word "Penda".
+#so that the search function will not pick them up if they are not a separate word.
+#Word "Penda" was included as it frequently features as part of another word, e.g. "independance".
+#Word "celt" wa excluded as it is not likely to form a part of another word in English and is one of the most relavant keywords.
+
+j=length(postKeywords)+1
+k=j
+i=1
+while(i < k){
+if ((nchar(postKeywords[i])<5 && postKeywords[i] != "Celt") || postKeywords[i] == "Penda" ){
+postKeywords[j] <- paste(" ",postKeywords[i],"\\. ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\, ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\! ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\? ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\; ",sep="")
+j=j+1
+postKeywords[j] <- paste(" ",postKeywords[i],"\\: ",sep="")
+postKeywords[i] <-paste(" ",postKeywords[i]," ",sep="")
+j=j+1
+i=i+1}else{i=i+1}}
+######Part 2: get the data with the keywords
+### my_posts is a list of lists of posts extracted from pages
+i=1
+j=length(my_posts)+1
+while (i<j){
+if(length(my_posts[[i]])>0){
+print (i)
+my_posts[[i]] <- searchPosts(my_posts[[i]],postKeywords)
+my_posts[[i]] <- subset(my_posts[[i]], my_posts[[i]]$keywords != "" )
+i=i+1}else{
+i=i+1}
+}
