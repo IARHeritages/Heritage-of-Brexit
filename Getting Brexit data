@@ -69,3 +69,6 @@ f=length(idsFP) +1
   save(my_posts,file="my_posts(a).R")
   
   ###Change the value of R and download next set of posts
+  
+  ###If you get an error in callAPI: #17 User request limit reach - to troubleshoot see:
+  https://developers.facebook.com/docs/marketing-api/api-rate-limiting
