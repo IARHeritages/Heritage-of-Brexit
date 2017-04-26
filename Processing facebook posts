@@ -29,6 +29,8 @@ library("data.table")
 
 #In this case we had 74 extracted files
 
+listPosts<-c()
+
 i=1
 
 while (i<75){
