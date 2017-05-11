@@ -1,0 +1,275 @@
+### Workflow for subsetting posts relevant for US/Mexican Border discussion from the previously extracted set of posts on facebok pages###
+###relating to US/Mexican border, US politicians and political parites and news media.
+
+### The code was developed as part of the IARH project
+### It subsets the relevant facebook posts and extracts the relevant comments
+### Project IARH
+### Author Marta Krzyzanska
+
+# Set working directory
+setwd("~path")
+
+# Require Rfacebook, devtools and xlsx packages. If you have not installed htenm already, run install.packages() first.
+
+library("textcat")
+library("data.table")
+library("xlsx")
+library("stringr")
+
+#Load the file with all the posts in the nested list
+
+load("~filename.R")
+
+#It is assumed that the r object in which the posts are stored is called listPosts
+
+####Fill in the language column
+
+i=1
+l=length(listPosts)+1
+while(i<l){
+print(paste("identifying language in",i,"out of",l,"posts",sep=" "))
+j=1
+m=length(listPosts[[i]])+1
+while(j<m){
+print (paste(j,"out of",m,spe=" "))
+
+if(length(listPosts[[i]][[j]])>0){
+if(length(listPosts[[i]][[j]]$keywords)>0){
+listPosts[[i]][[j]]$language<-textcat(listPosts[[i]][[j]]$message)}}
+
+j=j+1}
+i=i+1}
+
+####If there is an error, run the following code, add appropriate language manually and continue the loop:
+x=1
+z=length(listPosts[[i]][[j]]$keywords)+1
+while(x<z){
+listPosts[[i]][[j]]$language[x]<-textcat(listPosts[[i]][[j]]$message[x])
+x=x+1}
+
+###Get only English posts (and a bunch of posts misidentified as similiar languages)
+
+listEnglishPosts <- listPosts
+i=1
+j=length(listPosts)+1
+
+	while(i<j){
+		print (paste("Subsetting posts in list",i,"out of",(j-1),sep=" "))
+		k=1
+		l=length(listPosts[[i]])+1
+		while(k<l){
+			if(length(listPosts[[i]][[k]])>0){
+				listEnglishPosts[[i]][[k]] <- subset(listEnglishPosts[[i]][[k]],listEnglishPosts[[i]][[k]]$language=="english" | listEnglishPosts[[i]][[k]]$language=="scots" | listEnglishPosts[[i]][[k]]$language=="middle_frisian" | listEnglishPosts[[i]][[k]]$language=="frisian" | listEnglishPosts[[i]][[k]]$language=="breton" | listEnglishPosts[[i]][[k]]$language=="scots_gaelic")
+			}
+				
+			k=k+1
+		}
+		i=i+1
+	}
+
+#### Clean the keywords columns, to get rid of the punctuaction:
+
+smallKeywords<-c("USA","United States","Mexic","border","frontier","wall","migrant","migration","trump","fence")
+
+i=1
+l=length(listEnglishPosts)+1
+while(i<l){
+	print(paste("i=",i,sep=""))
+	j=1
+	o=length(listEnglishPosts[[i]])+1
+	while(j<o){
+		if(length(listEnglishPosts[[i]][[j]])>10 && length(listEnglishPosts[[i]][[j]]$message)>0){
+			k=1
+			n=length(listEnglishPosts[[i]][[j]]$message)+1
+			while(k<n){
+
+				for(m in smallKeywords){
+					if(str_count(listEnglishPosts[[i]][[j]]$keywords[k], pattern = m)>1){
+						listEnglishPosts[[i]][[j]]$keywords[k] <- gsub(m,"",listEnglishPosts[[i]][[j]]$keywords[k],fixed=TRUE)
+						listEnglishPosts[[i]][[j]]$keywords[k] <- paste(m,listEnglishPosts[[i]][[j]]$keywords[k],sep=", ")
+					}
+				}
+
+				a=nchar(listEnglishPosts[[i]][[j]]$keywords[k])
+				b=substr(listEnglishPosts[[i]][[j]]$keywords[k],a,a)
+
+				if(b==" "||b==","){
+					listEnglishPosts[[i]][[j]]$keywords[k]<-substr(listEnglishPosts[[i]][[j]]$keywords[k],1,a-1)
+					a = a=nchar(listEnglishPosts[[i]][[j]]$keywords[k])
+					b=substr(listEnglishPosts[[i]][[j]]$keywords[k],a,a)
+				
+					if(b==","){
+						listEnglishPosts[[i]][[j]]$keywords[k]<-substr(listEnglishPosts[[i]][[j]]$keywords[k],1,a-1)
+					}
+				}
+
+				a=nchar(listEnglishPosts[[i]][[j]]$keywords[k])
+				b=substr(listEnglishPosts[[i]][[j]]$keywords[k],1,1)
+				
+				if(b==" "){
+					listEnglishPosts[[i]][[j]]$keywords[k]<-substr(listEnglishPosts[[i]][[j]]$keywords[k],2,a)
+				}
+			
+				k=k+1
+			}
+
+		
+			listEnglishPosts[[i]][[j]]$keywords<-gsub("\\","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(".","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub("!","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub("?","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(":","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(";","",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(" ,",",",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)		
+			listEnglishPosts[[i]][[j]]$keywords<-gsub("  "," ",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(" ,",",",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)	
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(",,,",",",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(",,",",",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+			listEnglishPosts[[i]][[j]]$keywords<-gsub(" ,",",",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)		
+			listEnglishPosts[[i]][[j]]$keywords<-gsub("  "," ",listEnglishPosts[[i]][[j]]$keywords,fixed=TRUE)
+		}
+		j=j+1
+	}
+	
+	i=i+1
+}
+
+###sort keywords alphabetically:
+i=1
+l=length(listEnglishPosts)+1
+while(i<l){
+	j=1
+	m=length(listEnglishPosts[[i]])+1
+	while(j<m){
+		k=1
+		n=length(listEnglishPosts[[i]][[j]]$keywords)+1
+		while(k<n){
+			if(length(listEnglishPosts[[i]][[j]])>0){
+				if(length(listEnglishPosts[[i]][[j]]$keywords)>0){
+					a<-strsplit(listEnglishPosts[[i]][[j]]$keywords[k], ", ", fixed = FALSE, perl = FALSE, useBytes = FALSE)
+					b<-sort(a[[1]])
+					c<-paste(b, collapse=', ' )
+					listEnglishPosts[[i]][[j]]$keywords[k]<-c
+				}
+			}
+			k=k+1
+		}
+		j=j+1
+	}
+	i=i+1
+}
+
+###Subset only the posts with 3 or more keywords (excluding the ones with very similiar keywords):
+i=1
+l=length(listEnglishPosts)+1
+while(i<l){
+	j=1
+	m=length(listEnglishPosts[[i]])+1
+	while(j<m){
+		if(length(listEnglishPosts[[i]][[j]])>0){
+				if(length(listEnglishPosts[[i]][[j]]$keywords)>0){
+					listEnglishPosts[[i]][[j]]<-subset(listEnglishPosts[[i]][[j]],listEnglishPosts[[i]][[j]]$keywords_count>2)
+					k=1
+					n=length(listEnglishPosts[[i]][[j]]$keywords)+1
+					while(k<n){
+						for(o in tbe3){	
+							listEnglishPosts[[i]][[j]]<-subset(listEnglishPosts[[i]][[j]],listEnglishPosts[[i]][[j]]$keywords!=o)
+						}
+						k=k+1
+					}
+				}
+		
+		}
+		j=j+1
+	}
+	i=i+1
+}
+
+#####Additional code for looking at keywords and their combinations:
+
+### Get all the unique languages and all the unique entries for the keywords
+
+languages <- as.data.frame(table(listPostsTable$language))
+languages <- languages[with(languages, order(-Freq)), ]
+
+uniqueKeywords <- as.data.frame(table(listPostsTable$keywords))
+uniqueKeywords <- uniqueKeywords[with(uniqueKeywords, order(-Freq)), ]
+
+uk_count <- as.data.frame(table(listPostsTable$keywords_count))
+uk_count <- uk_count[with(uk_count, order(-Freq)), ]
+
+kw1<-subset(listPostsTable,listPostsTable$keywords_count==1)
+kw2<-subset(listPostsTable,listPostsTable$keywords_count==2)
+kw3<-subset(listPostsTable,listPostsTable$keywords_count==3)
+kw4<-subset(listPostsTable,listPostsTable$keywords_count==4)
+kw5<-subset(listPostsTable,listPostsTable$keywords_count==5)
+kw6<-subset(listPostsTable,listPostsTable$keywords_count==6)
+kw7<-subset(listPostsTable,listPostsTable$keywords_count==7)
+kw8<-subset(listPostsTable,listPostsTable$keywords_count==8)
+kw9<-subset(listPostsTable,listPostsTable$keywords_count==9)
+
+
+kw1uk <- as.data.frame(table(kw1$borderKeywords))
+kw1uk <- kw1uk[with(kw1uk, order(-Freq)), ]
+
+kw2uk <- as.data.frame(table(kw2$keywords))
+kw2uk <- kw2uk[with(kw2uk, order(-Freq)), ]
+
+
+kw1uk <- as.data.frame(table(kw1$keywords))
+kw1uk <- kw1uk[with(kw1uk, order(-Freq)), ]
+
+kw2uk <- as.data.frame(table(kw2$keywords))
+kw2uk <- kw2uk[with(kw2uk, order(-Freq)), ]
+
+kw3uk <- as.data.frame(table(kw3$keywords))
+kw3uk <- kw3uk[with(kw3uk, order(-Freq)), ]
+
+kw4uk <- as.data.frame(table(kw4$keywords))
+kw4uk <- kw4uk[with(kw4uk, order(-Freq)), ]
+
+kw5uk <- as.data.frame(table(kw5$keywords))
+kw5uk <- kw5uk[with(kw5uk, order(-Freq)), ]
+
+
+###Get comments:
+
+#Get all the comments under these posts
+#(Also gets posts without any comments under them, but then the entries in the list are empty)
+
+listPosts<-listEnglishPosts
+
+comments <- c()
+
+i=1
+j=length(listPosts)+1
+while (i<j){
+	print(paste("Extracting comments from element:",i,sep=""))
+	if(length(listPosts[[i]])>0){
+			k=1
+			m=length(listPosts[[i]])+1
+			comments2 <-c()
+			while (k<m){
+				print (k)
+				if(length(listPosts[[i]][[k]])>10){
+					n=1
+					o=length(listPosts[[i]][[k]]$id)+1
+					comments1 <- c()
+					while(n<o){
+						post_id<-listPosts[[i]][[k]]$id[n]
+						post <- getPost(post=post_id,n=1000000,token=token)
+						comments1[[n]] <-post
+						n=n+1
+					}
+				}
+				comments2[[k]]<-comments1
+				k=k+1
+			}
+	}
+	comments[[i]]<-comments2
+	save(comments,file=paste("comments(",i,").R",sep=""))
+	i=i+1
+
+}
+
+
