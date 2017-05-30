@@ -1,0 +1,12 @@
+
+
+readPost <- function(post_id,token){
+	tryCatch(
+	getPost(post=post_id,n=1000000000,token=token)
+	,
+	error=function(error_message){
+		message(error_message)
+		return(error_message)
+	}
+	)
+}
