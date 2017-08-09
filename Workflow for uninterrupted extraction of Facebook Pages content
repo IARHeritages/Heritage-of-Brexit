@@ -1,1 +1,158 @@
 
+### Workflow for extracting facebook pages found with specifci keywords together with all of their content (posts, comments, replies###
+### The code was developed as part of the IARH project
+### It extract public facebook pages found with specified keyword.
+### Subsequently, it extracts all posts, comments and replies on this pages, automatically handling common errors encountered using Rfacebook library
+### and thus it allows continous data download without user intervation
+### Project IARH
+### Author Marta Krzyzanska
+
+#####PART 1: SET UP #####
+# Set working directory
+
+setwd("~path")
+
+#Load all the required libraries:
+
+library(Rfacebook)
+library(devtools)
+library(xlsx)
+
+
+#Load or creaste the token to be used while extracting the material
+
+load("token.R")
+
+#Load or create the required list of keywords or set the list of keyworsd
+
+keywords<-read.csv("keywords.csv",head=FALSE)
+pageKeywords<-as.character(keywords[,1])
+
+#Set up the error handling function provided in the following link: https://github.com/IARHeritages/Facebook-codes/blob/master/Error%20handling%20with%20tryCatch
+
+
+##### PART 2: GET ALL THE PAGES #####
+
+
+###Loop to get the pages
+
+#Save all the pages in the list:
+
+listPages <- c()
+
+j=length(pageKeywords)+1
+i=1
+while (i < j){
+	print(i)
+	b <- handleAPIErrors(pageKeywords[i],token,"pages",100000000000)
+	b$pageKeywords <- pageKeywords[i]
+	listPages[[i]] <- b
+
+	i=i+1
+}
+
+#Save the pages in an r file:
+
+save(listPages,file="listPages.R")
+
+#####PART 3: GET ALL THE POSTS:#####
+
+#Gets all the posts on these pages
+#Once posts on the pages found with the given keywords are downloaded they are saved in an R file (listPostsi, where i represents the keywords) that contains the nested list, where listPosts[[k]] contains a dataframe of posts found on the facebook page k.
+
+i=1
+j=length(listPages)+1
+
+while (i < j){
+	print(paste("Downloading posts for keyword",pageKeywords[i],spe=""))
+	listPosts<- c()
+	page <- listPages[[i]]
+	k=1
+	l=length(page$id)+1
+	while (k<l){
+		print (k)
+		id<-page$id[k]
+		b <- handleAPIErrors(id,token,"posts",100000000000)
+		listPosts[[k]]<-b
+		k=k+1
+	}
+	save(listPosts,file=paste("listPosts",i,".R",sep=""))
+	i=i+1
+}
+
+#####PART 4: GET ALL THE COMMENTS ON THE PAGES:#####
+#Gets all the posts on the pages
+#Once comments on the pages found with the given keywords are downloaded they are saved in an R file (commentsi, where i represents the keywords) that contains the nested list, where comments[[k]][[m]]$comments contains a dataframe of comments found under post m on page k.
+
+
+i=1
+j=length(listPages)+1
+
+while (i<j){
+	print (paste("Downloading comments for keyword",pageKeywords[i],spe=""))
+	load(paste("listPosts",i,".R",sep=""))
+	comments <- c()
+	k=1
+	l=length(listPosts)+1
+	while(k<l){
+		print(k)
+		com2<-c()
+		m=1
+		n=length(listPosts[[k]]$id)+1
+		while(m<n){
+			id<-listPosts[[k]]$id[m]
+			b<-handleAPIErrors(id,token,"comments",10000000000)
+			com2[[m]]<-b
+			m=m+1
+		}
+		comments[[k]]<-com2
+		k=k+1
+	}
+	save(comments,file=paste("comments",i,".R",sep=""))
+	i=i+1
+}
+
+
+
+
+########PART 5: GET ALL THE REPLIES ON THE PAGES:
+
+#Gets all the replies on the pages
+#Once replies on the pages found with the given keywords are downloaded they are saved in an R file (commentsi, where i represents the keywords) that contains the nested list, where replies[[k]][[m]][[o]]$replies contains a dataframe of replies found under the comment o, wrote under post m on page k.
+
+
+i=1
+j=length(listPages)+1
+
+while (i<j){
+	print(paste("Downloading replies for keyword",pageKeywords[i],spe=""))
+	load(paste("comments",i,".R",sep=""))
+	replies <- c()
+	k=1
+	l=length(comments)+1
+	while(k<l){
+		rep2<-c()
+		m=1
+		n=length(comments[[k]])+1
+		while(m<n){
+			rep3<-c()
+			o=1
+			p=length(comments[[k]][[m]]$comments$id)+1
+			while(o<p){
+				print (o)
+				id<-comments[[k]][[m]]$comments$id[o]
+				b<-handleAPIErrors(id,token,"replies",10000000000)
+				rep3[[p]]<-b
+				o=o+1
+			}
+			rep2[[m]]<-rep3
+			m=m+1
+		}
+		replies[[k]]<-rep2
+		k=k+1
+	}
+	save(replies,file=paste("replies",i,".R",sep=""))
+	i=i+1
+}
+
+
