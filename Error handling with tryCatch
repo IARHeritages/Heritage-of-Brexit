@@ -42,11 +42,13 @@ handleAPIErrors <- function(id,token,type,n){
                 		Sys.sleep(900)
 				z=1
 			}else if(error_message$message==unexpectedError){
-			z=1}else{
+			return (1)}else{
 			return(error_message)
 			z=y}
 		}
 		)
+		if(content==1){
+		z=1}
 	}
 	return (content)
 }
