@@ -1,15 +1,15 @@
 ################searchPosts() function documentation##########
 
 ### Documentation for the function searchPosts()
-### The function was developed as part of the IARH project
+### The function was developed as part of the Ancient Identities in Modern Britain (IARH) project
 ### It iterates through the facebook pages that can be extracted with searchPages() function
 ### and searches for the user-defined keywords in the posts under this page. Subsequently it 
 ### extracts posts that contain any given keyword into a dataframe that also indicates:
 ### which keywords are included in the post
 ### what Facebook page the post comes from (id and link)
-### Project IARH
-### Author Marta Krzyzanska
-### Some fragments of the code are based on: Facebook-scraper.R developed by Chiara Bonacchi as part of the IAHR project
+### Project: Ancient Identities in Modern Britain (IARH)
+### Author: Marta Krzyzanska
+### Some fragments of the code are based on: Facebook-scraper.R developed by Chiara Bonacchi as part of the Ancient Identities in Modern Britain (IARH) project
   
 
 ###User defined variables
@@ -22,10 +22,10 @@ np <- #number of posts per page to return
 
 searchPosts <-function(facebookPages, keywords,np){
 
-#Make a list of the ids of the facebook pages in the in the facebookPages dataframe
+#Make a list of the ids of the facebook pages in the facebookPages dataframe
 idsFP <- facebookPages$id
 
-##Create list in which relevant data will be stored:
+##Create a list in which relevant data will be stored:
 from_id <-c()
 from_name <-c()
 message <- c()
@@ -70,7 +70,7 @@ while (i<f){
 		if(l==TRUE){
 			my_keywords <- append(my_keywords,m)}
 			}
-	#Initiate the loop that checks whether any of the keywords appeared in the post, and if so, save the information about the post in the lists
+	#Initiate the loop that checks whether any of the keywords appeared in the post, and if so, saves information about the post in the lists
 	
 	if (length(my_keywords)>0){
 		my_keywords <- paste(my_keywords,collapse=', ')
