@@ -1,11 +1,11 @@
 
-### Workflow for extracting facebook pages found with specifci keywords together with all of their content (posts, comments, replies###
-### The code was developed as part of the IARH project
-### It extract public facebook pages found with specified keyword.
+### Workflow for extracting Facebook pages found with specific keywords together with all of their content (posts, comments, replies)###
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project
+### It extracts public Facebook pages found with specified keywords
 ### Subsequently, it extracts all posts, comments and replies on this pages, automatically handling common errors encountered using Rfacebook library
-### and thus it allows continous data download without user intervation
-### Project IARH
-### Author Marta Krzyzanska
+### and thus allowing continous data download without user intervention
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 #####PART 1: SET UP #####
 # Set working directory
@@ -19,16 +19,16 @@ library(devtools)
 library(xlsx)
 
 
-#Load or creaste the token to be used while extracting the material
+#Load or create the token to be used while extracting the material
 
 load("token.R")
 
-#Load or create the required list of keywords or set the list of keyworsd
+#Load or create the required list of keywords or set the list of keywords
 
 keywords<-read.csv("keywords.csv",head=FALSE)
 pageKeywords<-as.character(keywords[,1])
 
-#Set up the error handling function provided in the following link: https://github.com/IARHeritages/Facebook-codes/blob/master/Error%20handling%20with%20tryCatch
+#Set up the error handling function provided at the following link: https://github.com/IARHeritages/Facebook-codes/blob/master/Error%20handling%20with%20tryCatch
 
 
 ##### PART 2: GET ALL THE PAGES #####
