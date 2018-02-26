@@ -1,9 +1,9 @@
 ### verifyText() ###
 
-### The code was developed as part of the IARH project.
-### The function shows the use a keyword and fragment of the text in which it features and requests verification of it relevance.
+### The code was developed as part of the project 'Ancient Identities in Modern Britain' (IARH).
+### The function shows the use a keyword and fragment of the text in which it features and requests verification of its relevance.
 ### Returns logical vector.
-### Project IARH
+### Project: Ancient Identities in Modern Britain (IARH)
 ### Author Marta Krzyzanska
 
 
