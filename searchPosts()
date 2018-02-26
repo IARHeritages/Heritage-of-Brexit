@@ -4,6 +4,7 @@
 ### The function searches a text given a list of keywords and returns the list of keywords contained in the text
 ### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
 ### Author: Marta Krzyzanska
+### Some fragments of the code are based on: Facebook-scraper.R developed by Chiara Bonacchi as part of the IAHR project
 
 #Variables:
 
