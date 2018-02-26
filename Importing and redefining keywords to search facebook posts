@@ -1,14 +1,14 @@
 ### Workflow for importing and processing the keywords###
 
-### The code was developed as part of the IARH project
-### It imports and redefines the keywords that are going to be used to search facebook posts
-### Project IARH
-### Author Marta Krzyzanska
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project
+### It imports and redefines the keywords that are going to be used to search Facebook posts
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 # Set working directory
 setwd("~path")
 
-# Require xlsx package. If you have not installed htenm already, run install.packages() first.
+# Require xlsx package. If you have not installed it already, run install.packages() first.
 
 require(xlsx)
 
@@ -17,7 +17,7 @@ require(xlsx)
 #load the list of keywords
 keywords <- read.xlsx("#Enter_file_name.xlsx",1)
 
-#Make a separate lists of keywords to look for in the pages and in the posts.
+#Make a separate lists of the keywords to look for in the pages and in the posts
 
 #Substract one from the number of unique keywords if one of them is NA
 pkn <- length(unique(keywords[[1]])) - 1
@@ -29,7 +29,7 @@ postKeywords <- as.character(unique(keywords[[2]])[1:pokn])
 ###Part 2: Redefining keywords
 #Adds spaces and interpunction with spaces to keywords that are shorter than 5 letters and to the word "Penda".
 #so that the search function will not pick them up if they are not a separate word.
-#Word "Penda" was included as it frequently features as part of another word, e.g. "independance".
+#Word "Penda" was included as it frequently features as part of another word.
 #Word "celt" wa excluded as it is not likely to form a part of another word in English and is one of the most relavant keywords.
 
 j=length(postKeywords)+1
@@ -51,7 +51,9 @@ postKeywords[j] <- paste(" ",postKeywords[i],"\\: ",sep="")
 postKeywords[i] <-paste(" ",postKeywords[i]," ",sep="")
 j=j+1
 i=i+1}else{i=i+1}}
-######Part 2: get the data with the keywords
+
+
+######Part 2: gets the data that features the keywords
 ### my_posts is a list of lists of posts extracted from pages
 i=1
 j=length(my_posts)+1
