@@ -1,14 +1,14 @@
 ### searchPosts() ###
 
-### The code was developed as part of the IARH project
-### The function searches a text given list of keywords and returns the list of keywords
-### Project IARH
-### Author Marta Krzyzanska
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project 
+### The function searches a text given a list of keywords and returns the list of keywords contained in the text
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 #Variables:
 
 #post - string that contains the text in which keywords will be sought
-#keywords - list of keywords that the used for searching
+#keywords - list of keywords used for searching
 
 searchPost <-function(post, keywords){
 
