@@ -1,14 +1,14 @@
-###Function for automatic error handling while downloading facebook pages, posts, comments and replies with Rfacebook library###
-### The code was developed as part of the IARH project
-### Project: IARH
-### Author Marta Krzyzanska
+###Function for automatic error handling while downloading Facebook pages, posts, comments and replies with Rfacebook library###
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 ###Requires defining variables:
 
 limitError <-"(#17) User request limit reached"
 unexpectedError<-"An unexpected error has occurred. Please retry your request later."
 
-###Reguires libraries:
+###Requires libraries:
 
 library(Rfacebook)
 library(devtools)
