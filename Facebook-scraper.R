@@ -1,6 +1,6 @@
 ## *Scraper for public Facebook pages that contain a specific keyword in their title*
+###Project: Ancient Identities in Modern Britain (IARH) project; ancientidentities.org
 ###Author: Chiara Bonacchi
-###Project: IARH
 
 # Set working directory. 
 setwd("~path")
