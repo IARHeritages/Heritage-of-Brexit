@@ -1,6 +1,6 @@
 ###Module created to apply topic modelling.
 ###Project: Ancient Identities in Modern Britain (IARH) project; ancientidentities.org
-###Author: Mark Altaweel, with contributions from Marta Krzyzanska and Chiara Bonacchi
+###Author: Mark Altaweel, based on initial code developed by ....
 
 '''
 
