@@ -3,8 +3,8 @@
 ### The code was developed as part of the project 'Ancient Identities in Modern Britain' (IARH).
 ### The function shows the use a keyword and fragment of the text in which it features and requests verification of its relevance.
 ### Returns logical vector.
-### Project: Ancient Identities in Modern Britain (IARH)
-### Author Marta Krzyzanska
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 
 #Requires function requestVerification()
@@ -13,7 +13,7 @@
 
 #Asks the user whether the post is relevant
 #Returns user's answer
-#When prompted for answer, only 1,2,3 are valid answeres
+#When prompted for answer, only 1,2,3 are valid answers
 
 requestVerification <-function(){
 cat (noquote("\nIs this post relevant?\nEnter the value from menu:\n\n1.Yes\n2.No\n3.I need more information\n\n"))
@@ -29,7 +29,7 @@ return (x)}
 #text - text to be verified
 #keyword - keyword searched for in the text
 
-#When prompted for answer, only 1,2,3 are valid answeres
+#When prompted for answer, only 1,2,3 are valid answers
 
 verifyText<-function(text, keyword){
 	e=1
