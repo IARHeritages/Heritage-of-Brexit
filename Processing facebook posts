@@ -1,29 +1,29 @@
-### Workflow for processing facebook posts extracted with getPage() function###
+### Workflow for processing Facebook posts extracted with getPage() function###
 
-### The code was developed as part of the IARH project
-### Part 1 imports the facebook posts saved in multiple files and puts them in the list.
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project
+### Part 1 imports the Facebook posts saved in multiple files and puts them in the list.
 ### Part 2 extracts only those posts that have relevant keywords and identifies which language they are written in.
 ### Part 3 obtains the summary of which keywords appear in the posts and how frequently and which languages the posts are written in
-###Part 4 separates posts by language
-###Part 5 verifies whether posts containing keywords are actually relevant
-### Project IARH
-### Author Marta Krzyzanska
+### Part 4 separates posts by language
+### Part 5 verifies whether posts containing keywords are actually relevant
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Marta Krzyzanska
 
 
 # Set working directory
 setwd("~path")
 
-# Require "textcat" and "data.table"  packages. If you have not installed htenm already, run install.packages() first.
+# Require "textcat" and "data.table" packages. If you have not installed them already, run install.packages() first.
 
 library("textcat")
 library("data.table")
 #Require functions:
 
-#searchPages() - code available here: https://github.com/IARHeritages/Facebook-codes/blob/master/searchPosts()
-#requestVerification() and verifyText() - code available here: https://github.com/IARHeritages/Facebook-codes/blob/master/verifyText()%20(and%20requestVerification())
+#searchPosts() - code available here: https://github.com/IARHeritages/Heritage-of-Brexit/blob/master/searchPosts()
+#requestVerification() and verifyText() - code available here: https://github.com/IARHeritages/Heritage-of-Brexit/blob/master/verifyText()%20(and%20requestVerification())
 
 #Requires defining or importing keywords - code for importing keywords available here:
-#https://github.com/IARHeritages/Facebook-codes/blob/master/Importing%20and%20redefining%20keywords%20to%20search%20facebook%20posts
+#https://github.com/IARHeritages/Heritage-of-Brexit/blob/master/Importing%20and%20redefining%20keywords%20to%20search%20facebook%20posts
 
 ####Part 1: Load all the extracted posts and save them in the list, save the list put together.
 
@@ -43,7 +43,7 @@ i=i+1 }
 
 save(listPosts,file="listPosts.R")
 
-######Part 2: Extract only the data with the relevant keywords and detects the language of the posts 
+######Part 2: Extract only the data with the relevant keywords and detect the language of the posts 
 
 i=1
 j=length(listPosts)+1
@@ -94,7 +94,7 @@ languages <- languages[with(languages, order(-Freq)), ]
 uniqueKeywords <- as.data.frame(table(listPostsTable$keyword))
 uniqueKeywords <- uniqueKeywords[with(uniqueKeywords, order(-Freq)), ]
 
-####Part 4 option 1: extract only english posts or separate posts by languages
+####Part 4 option 1: extract only english posts or separate posts by language
 
 listEnglishPosts <- listPosts
 i=1
@@ -118,7 +118,7 @@ j=length(listPosts)+1
 		i=i+1
 	}
 	
-####Part 4 option 2: separates list of posts by language
+####Part 4 option 2: separate list of posts by language
 
 postsByLanguage<- c()
 y=1
