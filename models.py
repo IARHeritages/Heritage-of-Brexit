@@ -1,6 +1,7 @@
 ###Module created to apply topic modelling.
 ###Project: Ancient Identities in Modern Britain (IARH) project; ancientidentities.org
-###Author: Mark Altaweel, based on initial code developed by ....
+###Author: Mark Altaweel, based on initial code shared at:
+###https://markroxor.github.io/gensim/static/notebooks/gensim_news_classification.html#topic=1&lambda=1&term=
 
 '''
 
