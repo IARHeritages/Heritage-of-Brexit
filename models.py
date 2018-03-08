@@ -1,10 +1,8 @@
 '''
-Created on Sep 20, 2017
-
-Module created to apply topic modelling.
-
-
-@author: 
+### The code was developed as part of the Ancient Identities in Modern Britain (IARH) project
+### It allows performing topic modelling on a corpus of text
+### Project: Ancient Identities in Modern Britain (IARH); ancientidentities.org
+### Author: Mark Altaweel
 '''
 
 
