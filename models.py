@@ -5,7 +5,6 @@
 ### Author: Mark Altaweel
 '''
 
-
 import os
 import warnings
 import gensim
